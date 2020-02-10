@@ -1,18 +1,75 @@
 from django.db import models
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
+from datetime import date
 
 
-# Create your models here.
+def validate_year(value):
+    if value is not None and (value < 0 or value > date.today().year):
+        raise ValidationError(
+            _('%(value)s cannot be a proper year'),
+            params={'value': value},
+        )
+
+
+def validate_month(value):
+    if value is not None and (value < 1 or value > 12):
+        raise ValidationError(
+            _('%(value)s not a valid month'),
+            params={'value': value},
+        )
+
+
+def validate_day(value):
+    if value is not None and (value < 1 or value > 31):
+        raise ValidationError(
+            _('%(value)s not a valid day'),
+            params={'value': value},
+        )
+
+
 class Book(models.Model):
     title = models.CharField(max_length=255)
     authors = models.ManyToManyField('Author')
-    publishedDate = models.DateField()
-    isbn_10 = models.IntegerField()
-    isbn_13 = models.IntegerField()
-    pages = models.IntegerField()
-    cover = models.URLField()
-    language = models.CharField(max_length=64)
+    publishedYear = models.IntegerField(null=True, validators=[validate_year])
+    publishedMonth = models.IntegerField(null=True, validators=[validate_month])
+    publishedDay = models.IntegerField(null=True, validators=[validate_day])
+    isbn_10 = models.CharField(max_length=10, null=True)
+    isbn_13 = models.CharField(max_length=13, null=True)
+    pages = models.IntegerField(null=True)
+    cover = models.URLField(null=True)
+    language = models.ForeignKey('Language', null=True, on_delete=models.SET_NULL)
+
+    def __str__(self):
+        auths = self.authors.all()
+        authors = ''
+        for auth in auths:
+            authors += f'{auth}, '
+        date = str(self.publishedYear)
+        if self.publishedDay:
+            date += f'-{self.publishedMonth}-{self.publishedDay}'
+        if self.isbn_10:
+            ISBN_10 = self.isbn_10
+        else:
+            ISBN_10 = '--'
+        if self.isbn_13:
+            ISBN_13 = self.isbn_13
+        else:
+            ISBN_13 = '--'
+        ret_str = f"""'{self.title}', {authors} {date}, language: {self.language}, pages: {self.pages},
+                    ISBN 10: {ISBN_10}, ISBN 13: {ISBN_13}"""
+        return ret_str
 
 
 class Author(models.Model):
-    names = models.CharField(max_length=255)
-    surname = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
+
+class Language(models.Model):
+    language = models.CharField(max_length=64)
+
+    def __str__(self):
+        return self.language

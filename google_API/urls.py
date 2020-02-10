@@ -16,9 +16,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from google_books.views import get_books_from_api
+from google_books.views import (get_books_from_api,
+                                AllBooksView,
+                                )
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', get_books_from_api),
+    path('books', AllBooksView.as_view(), name='all-books')
 ]
