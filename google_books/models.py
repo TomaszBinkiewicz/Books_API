@@ -2,7 +2,7 @@ from django.db import models
 
 
 # Create your models here.
-class Book:
+class Book(models.Model):
     title = models.CharField(max_length=255)
     authors = models.ManyToManyField('Author')
     publishedDate = models.DateField()
@@ -13,6 +13,6 @@ class Book:
     language = models.CharField(max_length=64)
 
 
-class Author:
+class Author(models.Model):
     names = models.CharField(max_length=255)
     surname = models.CharField(max_length=255)
