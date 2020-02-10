@@ -1,9 +1,10 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 import requests
 from django.http import HttpResponse, Http404
 from .models import Book, Author, Language
 from datetime import datetime
 from django.views import View
+from .forms import AddBookForm
 
 
 def get_author_object(name):
@@ -95,3 +96,16 @@ class AllBooksView(View):
         if language:
             all_books = all_books.filter(language__language__icontains=language)
         return render(request, 'google_books/all_books.html', context={'books': all_books})
+
+
+class AddBookView(View):
+    def get(self, request):
+        form = AddBookForm()
+        return render(request, 'google_books/base_form.html', context={'form': form})
+
+    def post(self, request):
+        form = AddBookForm(request.POST)
+        if form.is_valid():
+            return redirect('all-books')
+        else:
+            return render(request, 'google_books/base_form.html', context={'form': form})

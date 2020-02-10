@@ -1,0 +1,9 @@
+{% extends 'google_books/base.html' %}
+{% block content %}
+<form method="POST" style="background-color: {{ color }}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="ADD">
+    {{ message }}
+</form>
+{% endblock %}
