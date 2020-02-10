@@ -16,6 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from google_books.views import get_books_from_api
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', get_books_from_api),
 ]
