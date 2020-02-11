@@ -106,6 +106,21 @@ class AddBookView(View):
     def post(self, request):
         form = AddBookForm(request.POST)
         if form.is_valid():
+            title = form.cleaned_data.get('title')
+            authors = form.cleaned_data.get('authors')
+            published_year = form.cleaned_data.get('publishedYear')
+            published_month = form.cleaned_data.get('publishedMonth')
+            published_day = form.cleaned_data.get('publishedDay')
+            isbn_10 = form.cleaned_data.get('isbn_10')
+            isbn_13 = form.cleaned_data.get('isbn_13')
+            pages = form.cleaned_data.get('pages')
+            cover = form.cleaned_data.get('cover')
+            language = form.cleaned_data.get('language')
+            new_book = Book.objects.create(title=title, publishedYear=published_year, publishedDay=published_day,
+                                           publishedMonth=published_month, isbn_10=isbn_10, isbn_13=isbn_13, pages=pages,
+                                           cover=cover, language=language)
+            for author in authors:
+                new_book.authors.add(author)
             return redirect('all-books')
         else:
             return render(request, 'google_books/base_form.html', context={'form': form})

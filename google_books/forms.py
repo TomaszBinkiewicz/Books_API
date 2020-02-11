@@ -49,6 +49,7 @@ class AddBookForm(forms.Form):
     }
     title = forms.CharField(max_length=64, label='Title')
     authors = forms.ModelChoiceField(label='First name', queryset=Author.objects.all(), error_messages=value_error)
+    authors = forms.ModelMultipleChoiceField(label='First name', queryset=Author.objects.all(), error_messages=value_error)
     publishedYear = forms.IntegerField(label='Year of publication', validators=[validate_year], required=False)
     publishedMonth = forms.IntegerField(label='Month of publication', validators=[validate_month], required=False)
     publishedDay = forms.IntegerField(label='Day of publication', validators=[validate_day], required=False)
