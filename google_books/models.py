@@ -46,11 +46,11 @@ class Book(models.Model):
         for auth in auths:
             authors += f'{auth}, '
         if self.publishedYear:
-            date = str(self.publishedYear)
+            publication_date = str(self.publishedYear)
         else:
-            date = '--'
+            publication_date = '--'
         if self.publishedDay:
-            date += f'-{self.publishedMonth}-{self.publishedDay}'
+            publication_date += f'-{self.publishedMonth}-{self.publishedDay}'
         if self.isbn_10:
             ISBN_10 = self.isbn_10
         else:
@@ -67,7 +67,7 @@ class Book(models.Model):
             pages = self.pages
         else:
             pages = '--'
-        ret_str = f"""'{self.title}', {authors} published: {date}, language: {language}, pages: {pages},
+        ret_str = f"""'{self.title}', {authors} published: {publication_date}, language: {language}, pages: {pages},
                     ISBN 10: {ISBN_10}, ISBN 13: {ISBN_13}"""
         return ret_str
 
