@@ -63,3 +63,16 @@ a.menu {
 select option{
     text-align-last:center;
 }
+
+div.paginator {
+    text-align: right;
+    margin: 10px;
+}
+
+div.paginator a {
+    color: rgba(175, 20, 20, 0.8);
+}
+
+div.filters {
+    text-align: center;
+}

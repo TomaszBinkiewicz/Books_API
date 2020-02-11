@@ -5,6 +5,7 @@ from .models import Book, Author, Language
 from datetime import datetime
 from django.views import View
 from .forms import AddBookForm, ImportFromApiForm
+from django.core.paginator import Paginator
 
 
 def get_author_object(name):
@@ -101,7 +102,10 @@ class AllBooksView(View):
             all_books = all_books.filter(publishedYear__lte=year_to)
         if language:
             all_books = all_books.filter(language__language__icontains=language)
-        return render(request, 'google_books/all_books.html', context={'books': all_books})
+        paginator = Paginator(all_books, 10)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        return render(request, 'google_books/all_books.html', context={'books': page_obj})
 
 
 class AddBookView(View):
