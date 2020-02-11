@@ -2,12 +2,26 @@ body {
     background-image: url("../images/beanstalk.png");
 }
 
-.book-cover{
-     width: 150px;
-    height: 200px;
-}
-
-img{
+img {
     height: 100%;
     width: auto;
+}
+
+.book-details {
+    height: 200px;
+    padding: 15px;
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.book-cover {
+    width: 150px;
+    font-style: italic;
+    margin-right: 15px;
+    float: left;
+    text-align: center;
+}
+
+.books-list {
+    list-style-type: none;
 }
