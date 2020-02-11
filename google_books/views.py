@@ -33,9 +33,6 @@ def get_books_from_api(request, url='https://www.googleapis.com/books/v1/volumes
     ret_str = ''
     for item in data['items']:
         book = item.get('volumeInfo')
-        ret_str += f"""{book.get('title')}, {book.get('authors')}, {book.get('publishedDate')},
-              {book.get('industryIdentifiers')}, {book.get('pageCount')},
-              {book.get('imageLinks').get('thumbnail')}, {book.get('language')}<br><br>"""
         title = book.get('title')
         authors = book.get('authors')
         publishedDate = book.get('publishedDate')
@@ -81,6 +78,7 @@ def get_books_from_api(request, url='https://www.googleapis.com/books/v1/volumes
             book = Book.objects.create(title=title, publishedYear=year, publishedMonth=month, publishedDay=day,
                                        language=lang, pages=pages, cover=cover_url, isbn_10=isbn_10, isbn_13=isbn_13)
             book.authors.set(authors_list)
+        ret_str += f"""{title}, {authors}, {publishedDate}, {isbns}, {pages}, {cover_url} {language}<br><br>"""
     return HttpResponse(ret_str)
 
 
