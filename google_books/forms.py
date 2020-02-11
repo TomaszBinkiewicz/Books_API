@@ -39,7 +39,7 @@ class AddBookForm(forms.Form):
         'invalid': 'Invalid',
         'invalid_choice': 'No such value'
     }
-    title = forms.CharField(max_length=64, label='Title')
+    title = forms.CharField(max_length=255, label='Title')
     authors = forms.ModelMultipleChoiceField(label='Authors', queryset=Author.objects.all(), error_messages=value_error)
     publishedYear = forms.IntegerField(label='Year of publication', validators=[validate_year], required=False)
     publishedMonth = forms.IntegerField(label='Month of publication', required=False, min_value=1, max_value=12)
@@ -63,7 +63,7 @@ class AddBookForm(forms.Form):
 
 
 class ImportFromApiForm(forms.Form):
-    title = forms.CharField(max_length=64, label='Title', required=False)
+    title = forms.CharField(max_length=255, label='Title', required=False)
     author = forms.CharField(max_length=128, label='Author', required=False)
     publisher = forms.CharField(max_length=128, label='Publisher', required=False)
     subject = forms.CharField(max_length=64, label='Subject', required=False)

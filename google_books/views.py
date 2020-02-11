@@ -62,6 +62,10 @@ def get_books_from_api(request, url='https://www.googleapis.com/books/v1/volumes
             year = int(publishedDate[:4])
             month = None
             day = None
+        except TypeError:
+            year = None
+            month = None
+            day = None
         else:
             year = published.year
             month = published.month
