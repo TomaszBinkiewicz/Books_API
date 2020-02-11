@@ -60,3 +60,25 @@ class AddBookForm(forms.Form):
             raise forms.ValidationError('Please select year of publication')
         if day is not None and month is None:
             raise forms.ValidationError('Please select month of publication')
+
+
+class ImportFromApiForm(forms.Form):
+    title = forms.CharField(max_length=64, label='Title', required=False)
+    author = forms.CharField(max_length=128, label='Author', required=False)
+    publisher = forms.CharField(max_length=128, label='Publisher', required=False)
+    subject = forms.CharField(max_length=64, label='Subject', required=False)
+    isbn = forms.CharField(min_length=10, max_length=13, label='ISBN', required=False)
+    lccn = forms.CharField(max_length=64, label='Library of Congress Control Number', required=False)
+    oclc = forms.CharField(max_length=64, label='Online Computer Library Center number', required=False)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        title = cleaned_data.get('title')
+        author = cleaned_data.get('author')
+        publisher = cleaned_data.get('publisher')
+        subject = cleaned_data.get('subject')
+        isbn = cleaned_data.get('isbn')
+        lccn = cleaned_data.get('lccn')
+        oclc = cleaned_data.get('oclc')
+        if not (title or author or publisher or subject  or isbn or lccn or oclc):
+            raise forms.ValidationError('Please select at least one searching criteria')

@@ -4,7 +4,7 @@ from django.http import HttpResponse, Http404
 from .models import Book, Author, Language
 from datetime import datetime
 from django.views import View
-from .forms import AddBookForm
+from .forms import AddBookForm, ImportFromApiForm
 
 
 def get_author_object(name):
@@ -23,11 +23,11 @@ def get_language_object(language):
     return language
 
 
-def get_books_from_api(request):
+def get_books_from_api(request, url='https://www.googleapis.com/books/v1/volumes?q=Hobbit'):
     """
-    Acquire data from google api (https://www.googleapis.com/books/v1/volumes?q=Hobbit) and save new records to database
+    Acquire data from google api and save new records to database
     """
-    response = requests.get('https://www.googleapis.com/books/v1/volumes?q=Hobbit')
+    response = requests.get(url)
     data = response.json()
     ret_str = ''
     for item in data['items']:
@@ -40,7 +40,9 @@ def get_books_from_api(request):
         publishedDate = book.get('publishedDate')
         isbns = book.get('industryIdentifiers')
         pages = book.get('pageCount')
-        cover_url = book.get('imageLinks').get('thumbnail')
+        cover_url = book.get('imageLinks')
+        if cover_url:
+            cover_url = cover_url.get('thumbnail')
         language = book.get('language')
         authors_list = []
         for author in authors:
@@ -101,7 +103,7 @@ class AllBooksView(View):
 class AddBookView(View):
     def get(self, request):
         form = AddBookForm()
-        return render(request, 'google_books/base_form.html', context={'form': form})
+        return render(request, 'google_books/base_form.html', context={'form': form, 'submit': 'ADD'})
 
     def post(self, request):
         form = AddBookForm(request.POST)
@@ -123,4 +125,41 @@ class AddBookView(View):
                 new_book.authors.add(author)
             return redirect('all-books')
         else:
-            return render(request, 'google_books/base_form.html', context={'form': form})
+            return render(request, 'google_books/base_form.html', context={'form': form, 'submit': 'ADD'})
+
+
+class ImportFromApi(View):
+    def get(self, request):
+        form = ImportFromApiForm()
+        return render(request, 'google_books/base_form.html', context={'form': form, 'submit': 'Import'})
+
+    def post(self, request):
+        url = 'https://www.googleapis.com/books/v1/volumes?q='
+        form = ImportFromApiForm(request.POST)
+        if form.is_valid():
+            title = form.cleaned_data.get('title')
+            author = form.cleaned_data.get('author')
+            publisher = form.cleaned_data.get('publisher')
+            subject = form.cleaned_data.get('subject')
+            isbn = form.cleaned_data.get('isbn')
+            lccn = form.cleaned_data.get('lccn')
+            oclc = form.cleaned_data.get('oclc')
+            if title:
+                url += f'+intitle:{title}'
+            if author:
+                url += f'+inauthor:{author}'
+            if publisher:
+                url += f'+inpublisher:{publisher}'
+            if subject:
+                url += f'+subject:{subject}'
+            if isbn:
+                url += f'+isbn:{isbn}'
+            if lccn:
+                url += f'+lccn:{lccn}'
+            if oclc:
+                url += f'+intitle:{oclc}'
+            print(url)
+            get_books_from_api(request, url=url)
+            return redirect('all-books')
+        else:
+            return render(request, 'google_books/base_form.html', context={'form': form, 'submit': 'Import'})
