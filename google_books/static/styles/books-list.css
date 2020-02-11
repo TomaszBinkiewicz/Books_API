@@ -1,0 +1,9 @@
+.book-cover{
+     width: 150px;
+    height: 200px;
+}
+
+img{
+    height: 100%;
+    width: auto;
+}
