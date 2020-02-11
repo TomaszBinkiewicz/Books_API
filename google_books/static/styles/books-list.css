@@ -1,3 +1,7 @@
+body {
+    background-image: url("../images/beanstalk.png");
+}
+
 .book-cover{
      width: 150px;
     height: 200px;

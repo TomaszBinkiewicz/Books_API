@@ -117,8 +117,8 @@ class AddBookView(View):
             cover = form.cleaned_data.get('cover')
             language = form.cleaned_data.get('language')
             new_book = Book.objects.create(title=title, publishedYear=published_year, publishedDay=published_day,
-                                           publishedMonth=published_month, isbn_10=isbn_10, isbn_13=isbn_13, pages=pages,
-                                           cover=cover, language=language)
+                                           publishedMonth=published_month, isbn_10=isbn_10, isbn_13=isbn_13,
+                                           pages=pages, cover=cover, language=language)
             for author in authors:
                 new_book.authors.add(author)
             return redirect('all-books')
