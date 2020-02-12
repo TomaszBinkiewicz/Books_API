@@ -18,6 +18,7 @@ def validate_month(value):
             _('%(value)s not a valid month'),
             params={'value': value},
         )
+    return True
 
 
 def validate_day(value):
@@ -26,3 +27,4 @@ def validate_day(value):
             _('%(value)s not a valid day'),
             params={'value': value},
         )
+    return True
