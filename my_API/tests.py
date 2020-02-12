@@ -55,3 +55,57 @@ class LanguageAPITestCase(APITestCase):
         response = self.client.delete(path=url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Language.objects.count(), 0)
+
+
+class AllAuthorsAPITestCase(APITestCase):
+
+    def test_create_author(self):
+        url = '/API/authors'
+        data = {'name': 'Alfred Szklarski'}
+        response = self.client.post(path=url, data=data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(Author.objects.count(), 1)
+        self.assertEqual(Author.objects.get().name, 'Alfred Szklarski')
+
+    def test_get_authors_list(self):
+        Author.objects.create(name='Alfred Szklarski')
+        Author.objects.create(name='J. R. R. Tolkien')
+        url = '/API/authors'
+        response = self.client.get(path=url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(Author.objects.count(), 2)
+
+    def test_delete_authors_list(self):
+        Author.objects.create(name='Alfred Szklarski')
+        Author.objects.create(name='J. R. R. Tolkien')
+        url = '/API/authors'
+        response = self.client.delete(path=url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(Author.objects.count(), 0)
+
+
+class AuthorAPITestCase(APITestCase):
+
+    def test_display_author(self):
+        url = '/API/authors/1'
+        response = self.client.get(path=url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        Author.objects.create(name='Alfred Szklarski')
+        response = self.client.get(path=url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data, {'id': 1, 'name': 'Alfred Szklarski'})
+
+    def test_update_author(self):
+        Author.objects.create(name='Alfred Szklarski')
+        url = '/API/authors/1'
+        data = {'name': 'Alfred Szklarski'}
+        response = self.client.put(path=url, data=data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(Author.objects.get().name, 'Alfred Szklarski')
+
+    def test_delete_author(self):
+        Author.objects.create(name='Alfred Szklarski')
+        url = '/API/authors/1'
+        response = self.client.delete(path=url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(Author.objects.count(), 0)
