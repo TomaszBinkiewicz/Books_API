@@ -34,6 +34,9 @@ class ValidateYearTestCase(TestCase):
         with self.assertRaises(ValidationError):
             validate_year(date.today().year + 1)
 
+    def test_validate_year_None(self):
+        self.assertTrue(validate_year(None))
+
 
 class ValidateMonthTestCase(TestCase):
 
@@ -51,6 +54,8 @@ class ValidateMonthTestCase(TestCase):
         with self.assertRaises(ValidationError):
             validate_month(13)
 
+    def test_validate_month_None(self):
+        self.assertTrue(validate_month(None))
 
 class ValidateDayTestCase(TestCase):
 
@@ -67,3 +72,6 @@ class ValidateDayTestCase(TestCase):
     def test_validate_day_32(self):
         with self.assertRaises(ValidationError):
             validate_day(32)
+
+    def test_validate_day_None(self):
+        self.assertTrue(validate_day(None))
