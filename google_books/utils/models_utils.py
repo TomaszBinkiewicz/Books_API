@@ -9,6 +9,7 @@ def validate_year(value):
             _('%(value)s cannot be a proper year'),
             params={'value': value},
         )
+    return True
 
 
 def validate_month(value):

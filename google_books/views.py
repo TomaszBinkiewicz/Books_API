@@ -21,10 +21,10 @@ def get_books_from_api(request, url='https://www.googleapis.com/books/v1/volumes
     ret_str = ''
     for item in data['items']:
         book = item.get('volumeInfo')
-        title = book.get('title')
-        authors = book.get('authors')
+        title = book.get('title', '--')
+        authors = book.get('authors', ['unknown'])
         publishedDate = book.get('publishedDate')
-        isbns = book.get('industryIdentifiers')
+        isbns = book.get('industryIdentifiers', [])
         pages = book.get('pageCount')
         cover_url = book.get('imageLinks')
         if cover_url:
@@ -36,8 +36,6 @@ def get_books_from_api(request, url='https://www.googleapis.com/books/v1/volumes
             authors_list.append(auth)
         isbn_10 = None
         isbn_13 = None
-        if isbns is None:
-            isbns = []
         for isbn in isbns:
             if isbn['type'] == 'ISBN_10':
                 isbn_10 = isbn['identifier']
@@ -109,7 +107,7 @@ class AddBookView(View):
             return render(request, 'google_books/base_form.html', context={'form': form, 'submit': 'ADD'})
 
 
-class ImportFromApi(View):
+class ImportFromApiView(View):
     def get(self, request):
         form = ImportFromApiForm()
         return render(request, 'google_books/base_form.html', context={'form': form, 'submit': 'Import'})
