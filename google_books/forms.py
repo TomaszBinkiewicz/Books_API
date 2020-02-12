@@ -80,5 +80,5 @@ class ImportFromApiForm(forms.Form):
         isbn = cleaned_data.get('isbn')
         lccn = cleaned_data.get('lccn')
         oclc = cleaned_data.get('oclc')
-        if not (title or author or publisher or subject  or isbn or lccn or oclc):
+        if not (title or author or publisher or subject or isbn or lccn or oclc):
             raise forms.ValidationError('Please select at least one searching criteria')

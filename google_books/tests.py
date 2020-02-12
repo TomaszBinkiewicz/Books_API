@@ -199,3 +199,25 @@ class AddBookViewTestCase(TestCase):
                            'publishedMonth': '', 'publishedDay': '', 'isbn_10': '', 'isbn_13': '', 'pages': '',
                            'cover': '', 'language': ''})
         self.assertEqual(response.status_code, 200)
+
+
+class ImportFromApiViewTestCase(TestCase):
+
+    def test_import_from_api_view_get(self):
+        c = Client()
+        response = c.get('/import-books/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_import_from_api_view_post(self):
+        c = Client()
+        response = c.post('/import-books/',
+                          {'title': 'django', 'author': '', 'publisher': '', 'subject': 'python', 'isbn': '',
+                           'lccn': '', 'oclc': ''})
+        self.assertEqual(response.status_code, 302)
+
+    def test_import_from_api_view_post_wrong_data(self):
+        c = Client()
+        response = c.post('/import-books/',
+                          {'title': '', 'author': '', 'publisher': '', 'subject': '', 'isbn': '', 'lccn': '',
+                           'oclc': ''})
+        self.assertEqual(response.status_code, 200)

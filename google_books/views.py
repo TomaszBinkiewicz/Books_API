@@ -18,7 +18,10 @@ def get_books_from_api(request, url='https://www.googleapis.com/books/v1/volumes
     """
     response = requests.get(url)
     data = response.json()
-    for item in data.get('items'):
+    items = data.get('items')
+    if items is None:
+        items = []
+    for item in items:
         book = item.get('volumeInfo')
         title = book.get('title', '--')
         authors = book.get('authors', ['unknown'])
