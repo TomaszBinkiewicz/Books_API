@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>REST API</title>
+</head>
+<body>
+<p>
+<h3>REST API</h3>
+</p>
+<div>
+    <table border="1" style="border-collapse: collapse">
+        <tr>
+            <th>
+                HTTP method
+            </th>
+            <th>
+                url address
+            </th>
+            <th>
+                Description
+            </th>
+        </tr>
+        <tr>
+            <td>
+                GET
+            </td>
+            <td>
+                /API/books
+            </td>
+            <td>
+                Download whole collection of books
+            </td>
+        </tr>
+        <tr>
+            <td>
+                POST
+            </td>
+            <td>
+                /API/books
+            </td>
+            <td>
+                Add new book record
+            </td>
+        </tr>
+        <tr>
+            <td>
+                DELETE
+            </td>
+            <td>
+                /API/books
+            </td>
+            <td>
+                Delete whole collection of books
+            </td>
+        </tr>
+        <tr>
+            <td>
+                GET
+            </td>
+            <td>
+                /API/books/1
+            </td>
+            <td>
+                Download book with id=1
+            </td>
+        </tr>
+        <tr>
+            <td>
+                PUT
+            </td>
+            <td>
+                /API/books/1
+            </td>
+            <td>
+                Edit book with id=1
+            </td>
+        </tr>
+        <tr>
+            <td>
+                DELETE
+            </td>
+            <td>
+                /API/books/1
+            </td>
+            <td>
+                Delete book with id=1
+            </td>
+        </tr>
+        <tr>
+            <td>
+                GET
+            </td>
+            <td>
+                /API/authors
+            </td>
+            <td>
+                Download whole collection of authors
+            </td>
+        </tr>
+        <tr>
+            <td>
+                POST
+            </td>
+            <td>
+                /API/authors
+            </td>
+            <td>
+                Add new author record
+            </td>
+        </tr>
+        <tr>
+            <td>
+                DELETE
+            </td>
+            <td>
+                /API/authors
+            </td>
+            <td>
+                Delete whole collection of authors
+            </td>
+        </tr>
+        <tr>
+            <td>
+                GET
+            </td>
+            <td>
+                /API/authors/1
+            </td>
+            <td>
+                Download author with id=1
+            </td>
+        </tr>
+        <tr>
+            <td>
+                PUT
+            </td>
+            <td>
+                /API/authors/1
+            </td>
+            <td>
+                Edit author with id=1
+            </td>
+        </tr>
+        <tr>
+            <td>
+                DELETE
+            </td>
+            <td>
+                /API/authors/1
+            </td>
+            <td>
+                Delete author with id=1
+            </td>
+        </tr>
+        <tr>
+            <td>
+                GET
+            </td>
+            <td>
+                /API/languages
+            </td>
+            <td>
+                Download whole collection of languages
+            </td>
+        </tr>
+        <tr>
+            <td>
+                POST
+            </td>
+            <td>
+                /API/languages
+            </td>
+            <td>
+                Add new language record
+            </td>
+        </tr>
+        <tr>
+            <td>
+                DELETE
+            </td>
+            <td>
+                /API/languages
+            </td>
+            <td>
+                Delete whole collection of languages
+            </td>
+        </tr>
+        <tr>
+            <td>
+                GET
+            </td>
+            <td>
+                /API/languages/1
+            </td>
+            <td>
+                Download language with id=1
+            </td>
+        </tr>
+        <tr>
+            <td>
+                PUT
+            </td>
+            <td>
+                /API/languages/1
+            </td>
+            <td>
+                Edit language with id=1
+            </td>
+        </tr>
+        <tr>
+            <td>
+                DELETE
+            </td>
+            <td>
+                /API/languages/1
+            </td>
+            <td>
+                Delete language with id=1
+            </td>
+        </tr>
+    </table>
+</div>
+<div>
+    <h4>Filtering books records</h4>
+    <p>
+        When sending HTTP GET request on <i>/API/books</i> you can perform filtering on books collection by passing
+        several
+        optional parameters:
+    <ul>
+        <li>
+            title - returns results where the text following this keyword is found in the title
+        </li>
+        <li>
+            author - returns results where the text following this keyword is found in the author
+        </li>
+        <li>
+            year_from - returns results where year of publication is greater than or equal to number following this
+            keyword
+        </li>
+        <li>
+            year_to - returns results where year of publication is lower than or equal to number following this keyword
+        </li>
+        <li>
+            language - returns results where the text following this keyword is found in language
+        </li>
+    </ul>
+    </p>
+    <p>
+        Here is an example of searching for "Hobbit" written by Tolkien and published in english:
+    <p>
+        <i>/API/books?author=Tolkien&title=Hobbit&language=en</i>
+    </p>
+    </p>
+</div>
+</body>
+</html>

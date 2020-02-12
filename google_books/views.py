@@ -48,6 +48,8 @@ def get_books_from_api(request, url='https://www.googleapis.com/books/v1/volumes
             authors_list.append(auth)
         isbn_10 = None
         isbn_13 = None
+        if isbns is None:
+            isbns = []
         for isbn in isbns:
             if isbn['type'] == 'ISBN_10':
                 isbn_10 = isbn['identifier']
@@ -82,24 +84,29 @@ def get_books_from_api(request, url='https://www.googleapis.com/books/v1/volumes
     return HttpResponse(ret_str)
 
 
+def filter_books(request):
+    title = request.GET.get('title')
+    author = request.GET.get('author')
+    year_from = request.GET.get('year_from')
+    year_to = request.GET.get('year_to')
+    language = request.GET.get('language')
+    books = Book.objects.all().order_by('title')
+    if title:
+        books = books.filter(title__icontains=title)
+    if author:
+        books = books.filter(authors__name__icontains=author)
+    if year_from:
+        books = books.filter(publishedYear__gte=year_from)
+    if year_to:
+        books = books.filter(publishedYear__lte=year_to)
+    if language:
+        books = books.filter(language__language__icontains=language)
+    return books
+
+
 class AllBooksView(View):
     def get(self, request):
-        title = request.GET.get('title')
-        author = request.GET.get('author')
-        year_from = request.GET.get('year_from')
-        year_to = request.GET.get('year_to')
-        language = request.GET.get('language')
-        all_books = Book.objects.all().order_by('title')
-        if title:
-            all_books = all_books.filter(title__icontains=title)
-        if author:
-            all_books = all_books.filter(authors__name__icontains=author)
-        if year_from:
-            all_books = all_books.filter(publishedYear__gte=year_from)
-        if year_to:
-            all_books = all_books.filter(publishedYear__lte=year_to)
-        if language:
-            all_books = all_books.filter(language__language__icontains=language)
+        all_books = filter_books(request)
         paginator = Paginator(all_books, 10)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
