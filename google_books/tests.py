@@ -158,3 +158,12 @@ class GetLanguageObjectTestCase(TestCase):
     def test_get_language_object_not_existing(self):
         language = get_language_object('fr')
         self.assertEqual(language.language, 'fr')
+
+
+class GetBooksFromApiTestCase(TestCase):
+
+    def test_get_books_from_api(self):
+        c = Client()
+        response = c.get('/')
+        request = response.wsgi_request
+        self.assertRedirects(get_books_from_api(request), '/books/', 302)

@@ -18,8 +18,7 @@ def get_books_from_api(request, url='https://www.googleapis.com/books/v1/volumes
     """
     response = requests.get(url)
     data = response.json()
-    ret_str = ''
-    for item in data['items']:
+    for item in data.get('items'):
         book = item.get('volumeInfo')
         title = book.get('title', '--')
         authors = book.get('authors', ['unknown'])
@@ -66,8 +65,7 @@ def get_books_from_api(request, url='https://www.googleapis.com/books/v1/volumes
             book = Book.objects.create(title=title, publishedYear=year, publishedMonth=month, publishedDay=day,
                                        language=lang, pages=pages, cover=cover_url, isbn_10=isbn_10, isbn_13=isbn_13)
             book.authors.set(authors_list)
-        ret_str += f"""{title}, {authors}, {publishedDate}, {isbns}, {pages}, {cover_url} {language}<br><br>"""
-    return HttpResponse(ret_str)
+    return redirect('all-books')
 
 
 class AllBooksView(View):
