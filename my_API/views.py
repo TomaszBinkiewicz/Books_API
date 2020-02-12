@@ -54,7 +54,7 @@ class AllBooksAPIView(APIView):
         serializer = BookSerializer(book, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request):
@@ -101,7 +101,7 @@ class AllAuthorsAPIView(APIView):
         serializer = AuthorSerializer(author, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request):
@@ -145,10 +145,10 @@ class AllLanguagesAPIView(APIView):
 
     def post(self, request):
         language = Language.objects.create()
-        serializer = AuthorSerializer(language, data=request.data)
+        serializer = LanguageSerializer(language, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request):
