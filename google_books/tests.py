@@ -50,3 +50,20 @@ class ValidateMonthTestCase(TestCase):
     def test_validate_month_13(self):
         with self.assertRaises(ValidationError):
             validate_month(13)
+
+
+class ValidateDayTestCase(TestCase):
+
+    def test_validate_day_1(self):
+        self.assertTrue(validate_day(1))
+
+    def test_validate_month_0(self):
+        with self.assertRaises(ValidationError):
+            validate_day(0)
+
+    def test_validate_day_31(self):
+        self.assertTrue(validate_day(31))
+
+    def test_validate_day_32(self):
+        with self.assertRaises(ValidationError):
+            validate_day(32)
