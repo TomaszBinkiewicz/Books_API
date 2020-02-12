@@ -10,10 +10,6 @@ from google_books.utils.models_utils import (validate_year,
                                              validate_month,
                                              validate_day,
                                              )
-from .views import (get_books_from_api,
-                    AllBooksView,
-                    AddBookView,
-                    ImportFromApiView)
 
 
 class ValidateYearTestCase(TestCase):
@@ -165,5 +161,41 @@ class GetBooksFromApiTestCase(TestCase):
     def test_get_books_from_api(self):
         c = Client()
         response = c.get('/')
-        request = response.wsgi_request
-        self.assertRedirects(get_books_from_api(request), '/books/', 302)
+        self.assertEqual(response.status_code, 302)
+
+
+class AllBooksViewTestCase(TestCase):
+
+    def test_all_books_view(self):
+        c = Client()
+        response = c.get('/books/')
+        self.assertEqual(response.status_code, 200)
+
+
+class AddBookViewTestCase(TestCase):
+
+    def setUp(self):
+        Author.objects.create(name='new author')
+        Author.objects.create(name='another author')
+
+    def test_add_book_view_get(self):
+        c = Client()
+        response = c.get('/add-book/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_add_book_view_post(self):
+        authors = Author.objects.all()
+        c = Client()
+        response = c.post('/add-book/',
+                          {'title': 'some title', 'authors': [authors[0].id, authors[1].id], 'publishedYear': '',
+                           'publishedMonth': '', 'publishedDay': '', 'isbn_10': '', 'isbn_13': '', 'pages': '',
+                           'cover': '', 'language': ''})
+        self.assertEqual(response.status_code, 302)
+
+    def test_add_book_view_post_wrong_data(self):
+        c = Client()
+        response = c.post('/add-book/',
+                          {'title': '', 'authors': [], 'publishedYear': '',
+                           'publishedMonth': '', 'publishedDay': '', 'isbn_10': '', 'isbn_13': '', 'pages': '',
+                           'cover': '', 'language': ''})
+        self.assertEqual(response.status_code, 200)
