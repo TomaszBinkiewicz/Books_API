@@ -1,6 +1,7 @@
-from django.test import TestCase
+from django.test import TestCase, Client
 from datetime import date
 from django.core.exceptions import ValidationError
+from .models import Book, Author, Language
 from google_books.utils.views_utils import (filter_books,
                                             get_author_object,
                                             get_language_object,
@@ -74,3 +75,86 @@ class ValidateDayTestCase(TestCase):
 
     def test_validate_day_None(self):
         self.assertTrue(validate_day(None))
+
+
+class FilterBooksTestCase(TestCase):
+
+    def setUp(self):
+        language_1 = Language.objects.create(language='pl')
+        author_1 = Author.objects.create(name='Adam Mickiewicz')
+        book_1 = Book.objects.create(title='Pan Tadeusz', publishedYear=1844, publishedMonth=None, publishedDay=None,
+                                     language=language_1, pages=395, cover=None, isbn_10=None, isbn_13=None)
+        book_1.authors.set([author_1])
+        language_2 = Language.objects.create(language='en')
+        author_2 = Author.objects.create(name='Arthur Conan Doyle')
+        book_2 = Book.objects.create(title='A Study in Scarlet', publishedYear=1887, publishedMonth=None,
+                                     publishedDay=None, language=language_2, pages=183, cover=None, isbn_10=None,
+                                     isbn_13=None)
+        book_2.authors.set([author_2])
+        book_3 = Book.objects.create(title='The Hound of the Baskervilles', publishedYear=1902, publishedMonth=None,
+                                     publishedDay=None, language=language_2, pages=235, cover=None, isbn_10=None,
+                                     isbn_13=None)
+        book_3.authors.set([author_2])
+
+    def test_filter_books_pan(self):
+        c = Client()
+        response = c.get('/books?title=pan')
+        request = response.wsgi_request
+        filtered_books = filter_books(request)
+        self.assertEqual(len(filtered_books), 1)
+        self.assertEqual(filtered_books[0].title, 'Pan Tadeusz')
+        self.assertEqual(filtered_books[0].authors.all()[0].name, 'Adam Mickiewicz')
+
+    def test_filter_books_en(self):
+        c = Client()
+        response = c.get('/books?language=en')
+        request = response.wsgi_request
+        filtered_books = filter_books(request)
+        self.assertEqual(len(filtered_books), 2)
+        for book in filtered_books:
+            with self.subTest(book=book):
+                self.assertEqual(book.language.language, 'en')
+
+    def test_filter_books_en_pan(self):
+        c = Client()
+        response = c.get('/books?language=en&title=pan')
+        request = response.wsgi_request
+        filtered_books = filter_books(request)
+        self.assertEqual(len(filtered_books), 0)
+
+    def test_filter_books_en_basker(self):
+        c = Client()
+        response = c.get('/books?language=en&title=basker')
+        request = response.wsgi_request
+        filtered_books = filter_books(request)
+        self.assertEqual(len(filtered_books), 1)
+        self.assertEqual(filtered_books[0].language.language, 'en')
+        self.assertEqual(filtered_books[0].title, 'The Hound of the Baskervilles')
+
+
+class GetAuthorObjectTestCase(TestCase):
+
+    def setUp(self):
+        Author.objects.create(name='Adam Mickiewicz')
+
+    def test_get_author_object_existing(self):
+        author = get_author_object('adam mickiewicz')
+        self.assertEqual(author.name, 'Adam Mickiewicz')
+
+    def test_get_author_object_not_existing(self):
+        author = get_author_object('Alfred Szklarski')
+        self.assertEqual(author.name, 'Alfred Szklarski')
+
+
+class GetLanguageObjectTestCase(TestCase):
+
+    def setUp(self):
+        Language.objects.create(language='en')
+
+    def test_get_language_object_existing(self):
+        language = get_language_object('EN')
+        self.assertEqual(language.language, 'en')
+
+    def test_get_language_object_not_existing(self):
+        language = get_language_object('fr')
+        self.assertEqual(language.language, 'fr')
