@@ -40,15 +40,14 @@ class ValidateYearTestCase(TestCase):
 
 class ValidateMonthTestCase(TestCase):
 
-    def test_validate_month_1(self):
-        self.assertTrue(validate_month(1))
+    def test_validate_month_1_to_12(self):
+        for i in range(1, 13):
+            with self.subTest(i=i):
+                self.assertTrue(validate_month(i))
 
     def test_validate_month_0(self):
         with self.assertRaises(ValidationError):
             validate_month(0)
-
-    def test_validate_month_12(self):
-        self.assertTrue(validate_month(12))
 
     def test_validate_month_13(self):
         with self.assertRaises(ValidationError):
@@ -57,17 +56,17 @@ class ValidateMonthTestCase(TestCase):
     def test_validate_month_None(self):
         self.assertTrue(validate_month(None))
 
+
 class ValidateDayTestCase(TestCase):
 
-    def test_validate_day_1(self):
-        self.assertTrue(validate_day(1))
+    def test_validate_day_1_to_31(self):
+        for i in range(1, 32):
+            with self.subTest(i=i):
+                self.assertTrue(validate_day(i))
 
     def test_validate_month_0(self):
         with self.assertRaises(ValidationError):
             validate_day(0)
-
-    def test_validate_day_31(self):
-        self.assertTrue(validate_day(31))
 
     def test_validate_day_32(self):
         with self.assertRaises(ValidationError):
