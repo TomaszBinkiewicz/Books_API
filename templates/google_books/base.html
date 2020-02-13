@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Books</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'styles/books-list.css' %}">
+</head>
+<body>
+<div class="menu">
+    <ul>
+        <li class="menu"><a class="menu" href="{% url 'all-books' %}">All books</a></li>
+        <li class="menu"><a class="menu" href="{% url 'add-book' %}">Add new book</a></li>
+        <li class="menu"><a class="menu" href="{% url 'import-books' %}">Import new books</a></li>
+    </ul>
+</div>
+{% block content %}
+
+{% endblock %}
+</body>
+</html>
